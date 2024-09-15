@@ -2,32 +2,44 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import AudioRecorder from './components/Audio'
+import storage from './firebase'
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
+  const uploadAudioToFirebase = (audioBlobOrFile) => {
+    const storageRef = ref(storage, `audio/${audioBlobOrFile.name || 'recorded-audio.wav'}`);
+  
+    const uploadTask = uploadBytesResumable(storageRef, audioBlobOrFile);
+  
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log(`Upload is ${progress}% done`);
+      },
+      (error) => {
+        console.error("Error uploading file:", error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          // You can now trigger your transcription backend
+        });
+      }
+    );
+  };
+  
+  const handleAudioFileChange = (e) => {
+    debugger
+    const file = e.target.files[0];
+    uploadAudioToFirebase(file);
+  }  
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AudioRecorder  onSave={uploadAudioToFirebase} />
     </>
   )
 }
