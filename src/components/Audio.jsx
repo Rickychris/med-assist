@@ -32,7 +32,7 @@ const AudioRecorder = ({ onSave }) => {
     if (recorder) {
       recorder.stop();
       recorder.ondataavailable = (e) => {
-        const audioBlob = new Blob([e.data], { type: "audio/wav" });
+        const audioBlob = new Blob([e.data], { type: "audio/webm" });
         setAudioUrl(URL.createObjectURL(audioBlob));
         onSave(audioBlob); // Pass the blob for further processing or saving
       };
@@ -55,6 +55,7 @@ const AudioRecorder = ({ onSave }) => {
         <button onClick={startRecording} disabled={isRecording}>
           Start Recording
         </button>
+        &nbsp;&nbsp;
         <button onClick={stopRecording} disabled={!isRecording}>
           Stop Recording
         </button>
@@ -70,7 +71,7 @@ const AudioRecorder = ({ onSave }) => {
 
       <div>
         <h4>Or Upload an Audio File</h4>
-        <input type="file" accept="audio/*" onChange={handleAudioFileChange} />
+        <input type="file" accept="audio/flac, audio/webm" onChange={handleAudioFileChange} />
         {audioFile && (
           <div>
             <h5>Uploaded Audio</h5>

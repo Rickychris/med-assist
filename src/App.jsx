@@ -3,14 +3,14 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import AudioRecorder from './components/Audio'
+import TranscriptionDisplay from './components/Transciptions'
 import storage from './firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
 
 function App() {
 
   const uploadAudioToFirebase = (audioBlobOrFile) => {
-    const storageRef = ref(storage, `audio/${audioBlobOrFile.name || 'recorded-audio.wav'}`);
+    const storageRef = ref(storage, `audio/${audioBlobOrFile.name || 'recorded-audio.webm'}`);
   
     const uploadTask = uploadBytesResumable(storageRef, audioBlobOrFile);
   
@@ -31,16 +31,12 @@ function App() {
       }
     );
   };
-  
-  const handleAudioFileChange = (e) => {
-    debugger
-    const file = e.target.files[0];
-    uploadAudioToFirebase(file);
-  }  
+
   return (
-    <>
-      <AudioRecorder  onSave={uploadAudioToFirebase} />
-    </>
+    <div className='wrap'>
+      <AudioRecorder  onSave={uploadAudioToFirebase}/>
+      <TranscriptionDisplay />
+    </div>
   )
 }
 
