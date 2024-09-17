@@ -1,6 +1,6 @@
 
 export function findQuestions(transcription) {
-  const questionWords = ['what', 'who', 'where', 'when', 'why', 'how', 'which', 'whom', 'whose'];
+  const questionWords = ['what', 'who', 'where', 'when', 'why', 'how', 'which', 'whom', 'whose', 'Can', 'have', 'having'];
 
   const sentences = transcription.split(/[.?!]/);  // Split on sentence terminators
   const questions = sentences.filter(sentence =>
@@ -23,7 +23,7 @@ export function findRelevantAnswer(question, document) {
     return null;
   }
 
-  const relevantSentences = relevantDiagnosis[0].name + ',\n ' + relevantDiagnosis[0].diagnosis;
+  const relevantSentences = relevantDiagnosis[0].name + ',\n ' + relevantDiagnosis[0].diagnosis + ',\n ' + relevantDiagnosis[0].treatment.join(', ');
 
   return relevantSentences;
 }

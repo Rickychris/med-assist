@@ -2,8 +2,9 @@ export const medicalDoc = [
     {
         "name": "Common Cold",
         "symptoms": [
-            "Runny nose",
-            "Sore throat",
+            "Runny","nose",
+            "Sore",
+            "throat",
             "Cough",
             "Congestion",
             "Sneezing"

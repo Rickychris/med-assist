@@ -1,6 +1,6 @@
 // TranscriptionDisplay.js
 import React, { useEffect, useState } from "react";
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore"; 
+import { collection, query, orderBy, limit, getDocs, deleteDoc } from "firebase/firestore"; 
 import { db } from "../firebase";  // Import Firestore instance
 import Diagnosis from "./Diagnosis";
 
@@ -41,15 +41,25 @@ const TranscriptionDisplay = () => {
     fetchTranscriptions();
   }, []);
 
+  const clearData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "transcriptions"));
+      querySnapshot.forEach(async doc => {
+        await deleteDoc(doc.ref);
+      })
+
+      setTranscriptions([]);
+    } catch (error) {
+      console.error("Error fetching transcriptions:", error);
+    }
+  };
+
   return (
     <div>
       <h2>Transcriptions</h2>
       {transcriptions.length === 0 ? (
         <>
         <p>No transcriptions available</p>
-        <button onClick={fetchTranscriptions}>
-          Get Diagnosis
-        </button>
         </>
       ) : (
         <ul>
@@ -62,6 +72,14 @@ const TranscriptionDisplay = () => {
         </ul>
       )}
       <Diagnosis transcription={transcriptions[0]?.transcription} />
+
+      <button onClick={fetchTranscriptions}>
+          Get Diagnosis
+        </button>
+        &nbsp;&nbsp;
+      <button onClick={clearData}>
+          Clear Data
+        </button>
 
     </div>
   );
